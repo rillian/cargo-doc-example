@@ -1,8 +1,14 @@
+use log::info;
+
+pub fn check() {
+    info!("Checking...");
+}
+
 #[cfg(test)]
 mod tests {
+
     #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+    fn check() {
+        super::check();
     }
 }
