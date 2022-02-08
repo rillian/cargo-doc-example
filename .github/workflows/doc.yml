@@ -1,0 +1,36 @@
+name: cargo doc
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '42 4 17 * *'
+
+jobs:
+  test:
+    name: cargo doc with ${{matrix.rust}} on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+
+    strategy:
+      matrix:
+        rust: [stable, nightly]
+        os: [ubuntu-latest]
+
+    env:
+      RUSTFLAGS: ''
+      CARGO_PROFILE_DEV_DEBUG: '0' # reduce size of target directory
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Generate crate docs
+        uses: actions-rs/cargo@v1
+        with:
+          command: doc
+
+      - name: Generate example docs
+        uses: actions-rs/cargo@v1
+        with:
+          command: doc
+          args: --example main

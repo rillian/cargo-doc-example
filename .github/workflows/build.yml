@@ -1,0 +1,41 @@
+name: cargo build
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '36 4 17 * *'
+
+jobs:
+  test:
+    name: Build with ${{matrix.rust}} on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+
+    strategy:
+      matrix:
+        rust: [stable, nightly]
+        os: [ubuntu-latest]
+
+    env:
+      RUSTFLAGS: ''
+      CARGO_PROFILE_DEV_DEBUG: '0' # reduce size of target directory
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+
+      - name: Test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+      - name: Run example
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: --example main
